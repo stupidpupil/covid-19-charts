@@ -49,7 +49,7 @@ labs(
   title = paste0(
     "Cumulative confirmed COVID-19 cases in Welsh Health Boards and English NHS Regions, ",
     "\nby days-since-", min_cases, "th-case, up to ", pretty_max_date),
-  y = "Confimed cases of COVID-19", 
+  y = "Confirmed cases of COVID-19", 
   x = paste0("Days since ", min_cases, " confirmed cases"))+
 facet_wrap(~`Health Board/NHS Region`, ncol=4, nrow=4)
 
