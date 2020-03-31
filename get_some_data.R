@@ -44,6 +44,12 @@ deaths_by_country <- deaths_by_country %>%
   mutate(Date = dmy(Date)) %>%
   pivot_longer(-Date, names_to = "Country", values_to = "Deaths")
 
+deaths_by_country <- deaths_by_country %>% filter(Country != 'UK')
+
+deaths_by_country$Country <- factor(deaths_by_country$Country, levels=c(
+  "Wales", "Scotland", "Northern Ireland", "England",
+  "Denmark", "Germany", "Italy", "Spain"))
+
 deaths_by_country <- deaths_by_country %>%
   group_by(Country) %>%
   mutate(
