@@ -1,7 +1,7 @@
 library("tidyverse")
 library("cowplot")
 
-max_cases = 6000
+max_cases = 10000
 pretty_max_date = cases_by_nhs$Date %>% max %>% strftime("%d-%b-%Y")
 
 my_plot <- ggplot(cases_by_nhs, aes(x=DaysSinceMinCases, y=Cases, group=`Health Board/NHS Region`)) +
@@ -33,9 +33,9 @@ geom_vline(xintercept=0, colour="grey70")+
 
 
 # Dashed guidelines for different rates
-geom_line(data=tibble(DaysSinceMinCases=c(0,14), Cases=c(min_cases, min_cases*(1.41**13))), aes(group=NULL), colour="grey70", linetype="longdash")+
-geom_line(data=tibble(DaysSinceMinCases=c(0,20), Cases=c(min_cases, min_cases*(1.26**19))), aes(group=NULL), colour="grey70", linetype="longdash")+
-geom_line(data=tibble(DaysSinceMinCases=c(0,20), Cases=c(min_cases, min_cases*(1.19**19))), aes(group=NULL), colour="grey70", linetype="longdash")+
+geom_line(data=tibble(DaysSinceMinCases=c(0,16), Cases=c(min_cases, min_cases*(1.41**15))), aes(group=NULL), colour="grey70", linetype="longdash")+
+geom_line(data=tibble(DaysSinceMinCases=c(0,21), Cases=c(min_cases, min_cases*(1.26**20))), aes(group=NULL), colour="grey70", linetype="longdash")+
+geom_line(data=tibble(DaysSinceMinCases=c(0,21), Cases=c(min_cases, min_cases*(1.19**20))), aes(group=NULL), colour="grey70", linetype="longdash")+
 
 
 # The actual region's line
@@ -69,7 +69,10 @@ my_plot <- ggdraw(my_plot) + draw_label(x=0.34, y=0.215, hjust=0, vjust=1, fontf
     "Numbers of confirmed cases are affected by many factors."
   ))
 
+
+
 print(my_plot)
+
 
 scaling_factor = 1.56
 ggsave(paste0(pretty_max_date, ".png"), height=11/scaling_factor, width=11.5/scaling_factor, dpi=72*scaling_factor)
