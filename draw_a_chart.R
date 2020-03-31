@@ -43,6 +43,7 @@ geom_line(colour='#005EB8', size=0.65) +
 geom_point(colour='#005EB8', size=0.3) +
 
 
+
 scale_y_log10(limits=c(min_cases, max_cases))+
 labs(
   title = paste0(
@@ -59,9 +60,11 @@ my_plot <- ggdraw(my_plot) + draw_label(x=0.34, y=0.215, hjust=0, vjust=1, fontf
     "\n\n",
     "Dashed lines show rates that would produce doubling of cases \nat every 2, 3 and 4 days (top, middle, bottom).",
     "\n\n",
-    "Data from Public Health Wales (collated by @LloydCymru) \nand Public Health England, as published daily, up to ", pretty_max_date, ".",
+    "Data from Public Health Wales",
+    #"(collated by @LloydCymru) ",
+    "\nand Public Health England, as published daily, up to ", pretty_max_date, ".",
     "\n\n",
-    "Chart produced by @agcwatkins, based on @jburnmurdoch's designs.",
+    #"Chart produced by @agcwatkins, based on @jburnmurdoch's designs.",
     "\n",
     "Numbers of confirmed cases are affected by many factors."
   ))
