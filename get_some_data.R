@@ -1,35 +1,55 @@
 library('tidyverse')
 library('lubridate')
-
+library('RcppRoll')
 
 cases_by_nhs <- read_csv("https://docs.google.com/spreadsheets/d/1LYQ7sz8GEpS2ClwuGuu_-EIiy5x2miycsWIVVlXrZoI/export?format=csv&id=1LYQ7sz8GEpS2ClwuGuu_-EIiy5x2miycsWIVVlXrZoI&gid=1335016048")
 
 cases_by_nhs <- cases_by_nhs %>% 
   mutate(Date = dmy(Date)) %>%
-  pivot_longer(-Date, names_to = "Health Board/NHS Region", values_to = "Cases")
+  pivot_longer(-Date, names_to = "Region", values_to = "Cases")
 
 orgs <- read_csv("https://docs.google.com/spreadsheets/d/1LYQ7sz8GEpS2ClwuGuu_-EIiy5x2miycsWIVVlXrZoI/export?format=csv&id=1LYQ7sz8GEpS2ClwuGuu_-EIiy5x2miycsWIVVlXrZoI&gid=1236221803")
+
+cases_by_nhs$Region = 
+  factor(cases_by_nhs$Region, levels = orgs$Region)
+
 
 min_cases = 50
 
 cases_by_nhs <- cases_by_nhs %>%
-  group_by(`Health Board/NHS Region`) %>%
+  group_by(Region) %>%
+  filter(!is.na(Cases)) %>%
+  arrange(Date) %>%
   mutate(
+    NewCases = ifelse(is.na(lag(Cases)), Cases, Cases-lag(Cases)),
     DaysSinceMinCases = case_when(
         Cases < min_cases ~ -1,
         TRUE ~ 0
       )
-    ) %>%
-  filter(DaysSinceMinCases >= 0, !is.na(Cases)) %>%
-  mutate(
-    DaysSinceMinCases = as.numeric(Date-min(Date), unit="days")
-    ) %>%
+    )
+
+
+for_min_cases_chart <- cases_by_nhs %>% 
+  filter(DaysSinceMinCases == 0) %>%
+  mutate(DaysSinceMinCases = as.numeric(Date-min(Date), unit="days") ) %>%
   ungroup()
 
-cases_by_nhs <- cases_by_nhs %>% left_join(orgs, by="Health Board/NHS Region")
 
-cases_by_nhs$`Health Board/NHS Region` = 
-  factor(cases_by_nhs$`Health Board/NHS Region`, levels = orgs$`Health Board/NHS Region`)
+min_new_cases_in_last_week = 100
+
+for_new_cases_in_last_week_chart <- cases_by_nhs %>% 
+  ungroup() %>% complete(nesting(Region, Date)) %>% group_by(Region) %>%
+  mutate(
+    NewCasesInLastWeek = roll_sum(NewCases, 7, align="right", fill=NA),
+    DaysSinceMinNewCasesInLastWeek = case_when(
+        is.na(NewCasesInLastWeek) ~ -1,
+        NewCasesInLastWeek < min_new_cases_in_last_week ~ -1,
+        TRUE ~ 0
+      )
+  ) %>% 
+  filter(DaysSinceMinNewCasesInLastWeek == 0 ) %>%
+  mutate(DaysSinceMinNewCasesInLastWeek = as.numeric(Date-min(Date), unit="days") ) %>%
+  ungroup()
 
 
 #

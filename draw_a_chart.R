@@ -2,9 +2,9 @@ library("tidyverse")
 library("cowplot")
 
 max_cases = 10000
-pretty_max_date = cases_by_nhs$Date %>% max %>% strftime("%d-%b-%Y")
+pretty_max_date = for_min_cases_chart$Date %>% max %>% strftime("%d-%b-%Y")
 
-my_plot <- ggplot(cases_by_nhs, aes(x=DaysSinceMinCases, y=Cases, group=`Health Board/NHS Region`)) +
+my_plot <- ggplot(for_min_cases_chart, aes(x=DaysSinceMinCases, y=Cases, group=Region)) +
 
 
 
@@ -24,7 +24,7 @@ theme(
   )+
 
 # All lines in the background, light grey
-geom_line(data=cases_by_nhs %>% rename(TempGroup=`Health Board/NHS Region`), aes(group=TempGroup), colour='grey90', size=1.2) + 
+geom_line(data=for_min_cases_chart %>% rename(TempGroup=Region), aes(group=TempGroup), colour='grey90', size=1.2) + 
 
 
 # Fake axes
@@ -51,7 +51,7 @@ labs(
     "\nby days-since-", min_cases, "th-case, up to ", pretty_max_date),
   y = "Confirmed cases of COVID-19", 
   x = paste0("Days since ", min_cases, " confirmed cases"))+
-facet_wrap(~`Health Board/NHS Region`, ncol=4, nrow=4)
+facet_wrap(~Region, ncol=4, nrow=4)
 
 
 my_plot <- ggdraw(my_plot) + draw_label(x=0.34, y=0.215, hjust=0, vjust=1, fontfamily="Menlo", colour='grey40', size=7.6, lineheight=1.1,

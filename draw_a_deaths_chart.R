@@ -47,7 +47,7 @@ geom_point(colour='#F28E00', size=0.3) +
 scale_y_log10(limits=c(min_deaths, max_deaths))+
 labs(
   title = paste0(
-    "Cumulative reported deaths with COVID-19 in constituent countries of UK, and four other countries, ",
+    "Cumulative reported deaths with COVID-19 in countries of UK, and four other countries, ",
     "\nby days-since-", min_deaths, "th-death, up to ", pretty_max_date),
   y = "Reported deaths with COVID-19", 
   x = paste0("Days since ", min_deaths, " deaths"))+
