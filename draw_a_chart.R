@@ -1,58 +1,14 @@
 library("tidyverse")
 library("cowplot")
 
-max_cases = 10000
-pretty_max_date = for_min_cases_chart$Date %>% max %>% strftime("%d-%b-%Y")
+source("draw_a_chart_function.R")
 
-my_plot <- ggplot(for_min_cases_chart, aes(x=DaysSinceMinCases, y=Cases, group=Region)) +
-
-
-
-theme_classic()+
-theme(
-  strip.text.x = element_text(colour='#005EB8', hjust=0.05, vjust=0, family="Bahnschrift"),
-  strip.background = element_blank(),
-  axis.line.x = element_blank(),
-  axis.line.y = element_blank(),
-  axis.text.x = element_text(colour='grey60', size=7, family="Menlo"),
-  axis.text.y = element_text(colour='grey60', size=7, family="Menlo"),
-  axis.title.x = element_blank(),
-  axis.title.y = element_text(colour='grey60', size=8, family="Menlo", margin=margin(0.1,0.35,0.1,0.1, "cm")),
-  axis.ticks.y = element_line(colour='grey60'),
-  axis.ticks.x = element_line(colour='grey60'),
-  plot.title = element_text(colour='grey30', size=11.5, vjust=0, family="Bahnschrift", margin=margin(0.2,0.1,0.2,0.1, "cm"), lineheight=1.1)
-  )+
-
-# All lines in the background, light grey
-geom_line(data=for_min_cases_chart %>% rename(TempGroup=Region), aes(group=TempGroup), colour='grey90', size=1.2) + 
-
-
-# Fake axes
-geom_hline(yintercept=min_cases, colour="grey70")+
-geom_vline(xintercept=0, colour="grey70")+
-
-
-# Dashed guidelines for different rates
-geom_line(data=tibble(DaysSinceMinCases=c(0,16), Cases=c(min_cases, min_cases*(1.41**15))), aes(group=NULL), colour="grey70", linetype="longdash")+
-geom_line(data=tibble(DaysSinceMinCases=c(0,21), Cases=c(min_cases, min_cases*(1.26**20))), aes(group=NULL), colour="grey70", linetype="longdash")+
-geom_line(data=tibble(DaysSinceMinCases=c(0,21), Cases=c(min_cases, min_cases*(1.19**20))), aes(group=NULL), colour="grey70", linetype="longdash")+
-
-
-# The actual region's line
-geom_line(colour='#005EB8', size=0.65) +
-geom_point(colour='#005EB8', size=0.3) +
-
-
-
-scale_y_log10(limits=c(min_cases, max_cases))+
-labs(
-  title = paste0(
-    "Cumulative confirmed COVID-19 cases in Welsh Health Boards and English NHS Regions, ",
-    "\nby days-since-", min_cases, "th-case, up to ", pretty_max_date),
-  y = "Confirmed cases of COVID-19", 
-  x = paste0("Days since ", min_cases, " confirmed cases"))+
-facet_wrap(~Region, ncol=4, nrow=4)
-
+my_plot <- for_min_cases_chart %>% draw_a_jburnish_chart(
+  x=DaysSinceMinCases, y=Cases, group=Region, y_min=min_cases,
+  title = paste0("Cumulative confirmed COVID-19 cases in Welsh Health Boards and English NHS Regions, \nby days-since-", min_cases, "th-case"),
+  y_title = "Cumulative confirmed cases of COVID-19",
+  x_title = paste0("Days since ", min_cases, " confirmed cases")
+  )
 
 my_plot <- ggdraw(my_plot) + draw_label(x=0.34, y=0.215, hjust=0, vjust=1, fontfamily="Menlo", colour='grey40', size=7.6, lineheight=1.1,
   paste0(
@@ -68,7 +24,6 @@ my_plot <- ggdraw(my_plot) + draw_label(x=0.34, y=0.215, hjust=0, vjust=1, fontf
     "\n",
     "Numbers of confirmed cases are affected by many factors."
   ))
-
 
 
 print(my_plot)
