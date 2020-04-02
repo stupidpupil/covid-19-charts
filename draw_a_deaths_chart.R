@@ -16,4 +16,4 @@ my_plot <- for_deaths_chart %>% draw_a_jburnish_chart(
 print(my_plot)
 
 scaling_factor = 1.56
-ggsave(paste0(pretty_max_date, " Deaths", ".png"), height=11/(1.6*scaling_factor), width=11.5/scaling_factor, dpi=72*scaling_factor)
+ggsave(paste0(pretty_max_date, " Deaths", ".png"), height=11/(1.8*scaling_factor), width=11.5/scaling_factor, dpi=72*scaling_factor)
