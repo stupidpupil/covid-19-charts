@@ -53,10 +53,11 @@ draw_a_jburnish_chart <- function(
 
 
   # Guidelines based around how often the quantity doubles
+  max_x <- data_for_chart %>% pull(!!enquo(x)) %>% max()
   for (x_days in guides_doubling_every_x_days) {
     q <- 2**(1 / x_days)
 
-    guide_data <- tibble(!!enquo(x) := seq(0, data_for_chart %>% pull(!!enquo(x)) %>% max())) %>%
+    guide_data <- tibble(!!enquo(x) := seq(0, max_x)) %>%
       mutate(!!enquo(y) := y_min * (q**(!!enquo(x))))
 
     my_plot <- my_plot + geom_line(data = guide_data, aes(group = NULL), colour = "grey70", linetype = "longdash")
