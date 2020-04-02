@@ -5,7 +5,7 @@ source("draw_a_chart_function.R")
 
 
 my_plot <- for_new_deaths_in_last_week_chart %>% draw_a_jburnish_chart(
-  x=DaysSinceMinNewDeathsInLastWeek, y=NewDeathsInLastWeek, group=Country, y_min=min_new_deaths_in_last_week, y_max = 500,
+  x=DaysSinceMinNewDeathsInLastWeek, y=NewDeathsInLastWeek, group=Country, y_min=min_new_deaths_in_last_week, y_max = 1000,
   title = paste0("New reported COVID-19 deaths in previous week, \nby days-since-", min_new_deaths_in_last_week, "-new-deaths-first-reported-in-a-week"),
   y_title = "New reported COVID-19 deaths in previous 7 days",
   x_title = paste0("Days since first ", min_cases, " deaths reported in previous week"),
