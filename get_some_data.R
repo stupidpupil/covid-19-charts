@@ -4,7 +4,6 @@ library("lubridate")
 source("rolling_seven_day_sums.R")
 source("days_since_min.R")
 
-
 workbook_url = "https://docs.google.com/spreadsheets/d/1LYQ7sz8GEpS2ClwuGuu_-EIiy5x2miycsWIVVlXrZoI/export?format=csv&id=1LYQ7sz8GEpS2ClwuGuu_-EIiy5x2miycsWIVVlXrZoI"
 
 cases_by_nhs <- read_csv(paste0(workbook_url, "&gid=1335016048"))
@@ -13,13 +12,12 @@ cases_by_nhs <- cases_by_nhs %>%
   mutate(Date = dmy(Date)) %>%
   pivot_longer(-Date, names_to = "Region", values_to = "Cases")
 
-orgs <- read_csv(paste0(workbook_url, "&gid=1236221803"))
-
-
 pretty_max_date <- cases_by_nhs$Date %>%
   max() %>%
   strftime("%d-%b-%Y")
+  
 
+orgs <- read_csv(paste0(workbook_url, "&gid=1236221803"))
 
 cases_by_nhs$Region <-
   factor(cases_by_nhs$Region, levels = orgs$Region)
