@@ -8,7 +8,7 @@ my_plot <- for_deaths_chart %>% draw_a_jburnish_chart(
   title = paste0("Cumulative reported deaths with COVID-19 in countries of UK, and four other countries, \nby days-since-", min_deaths, "th-death"),
   y_title = "Reported deaths with COVID-19",
   x_title = paste0("Days since ", min_deaths, " deaths"),
-  primary_colour = "#F28E00"
+  primary_colour = "#F28E00" # Orange
 )
 
 print(my_plot)
