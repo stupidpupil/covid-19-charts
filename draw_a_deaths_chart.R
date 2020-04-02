@@ -2,9 +2,9 @@ library("tidyverse")
 library("cowplot")
 
 max_deaths = 3000
-pretty_max_date = deaths_by_country$Date %>% max %>% strftime("%d-%b-%Y")
+pretty_max_date = for_deaths_chart$Date %>% max %>% strftime("%d-%b-%Y")
 
-my_plot <- ggplot(deaths_by_country, aes(x=DaysSinceMinDeaths, y=Deaths, group=Country)) +
+my_plot <- ggplot(for_deaths_chart, aes(x=DaysSinceMinDeaths, y=Deaths, group=Country)) +
 
 
 
@@ -24,7 +24,7 @@ theme(
   )+
 
 # All lines in the background, light grey
-geom_line(data=deaths_by_country %>% rename(TempGroup=Country), aes(group=TempGroup), colour='grey90', size=1.2) + 
+geom_line(data=for_deaths_chart %>% rename(TempGroup=Country), aes(group=TempGroup), colour='grey90', size=1.2) + 
 
 
 # Fake axes

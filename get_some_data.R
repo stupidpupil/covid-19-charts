@@ -77,9 +77,15 @@ deaths_by_country <- deaths_by_country %>%
         Deaths < min_deaths ~ -1,
         TRUE ~ 0
       )
-    ) %>%
+    )
+
+
+for_deaths_chart <- deaths_by_country %>%
   filter(DaysSinceMinDeaths >= 0, !is.na(Deaths)) %>%
   mutate(
     DaysSinceMinDeaths = as.numeric(Date-min(Date), unit="days")
     ) %>%
   ungroup()
+
+
+  
