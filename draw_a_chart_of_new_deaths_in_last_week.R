@@ -18,4 +18,6 @@ print(my_plot)
 
 
 scaling_factor = 1.56
-ggsave(paste0(pretty_max_date, " NewDeathsInLastWeek.png"), height=11/(1.8*scaling_factor), width=11.5/scaling_factor, dpi=72*scaling_factor)
+ggsave(
+  paste0("output/", pretty_max_date, " New Deaths in Last Week", ".png"), 
+  height=11/(1.8*scaling_factor), width=11.5/scaling_factor, dpi=72*scaling_factor)
