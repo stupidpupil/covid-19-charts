@@ -1,39 +1,44 @@
-library('tidyverse')
-library('lubridate')
+library("tidyverse")
+library("lubridate")
 
-source('rolling_seven_day_sums.R')
-source('days_since_min.R')
+source("rolling_seven_day_sums.R")
+source("days_since_min.R")
 
 
-cases_by_nhs <- read_csv("https://docs.google.com/spreadsheets/d/1LYQ7sz8GEpS2ClwuGuu_-EIiy5x2miycsWIVVlXrZoI/export?format=csv&id=1LYQ7sz8GEpS2ClwuGuu_-EIiy5x2miycsWIVVlXrZoI&gid=1335016048")
+workbook_url = "https://docs.google.com/spreadsheets/d/1LYQ7sz8GEpS2ClwuGuu_-EIiy5x2miycsWIVVlXrZoI/export?format=csv&id=1LYQ7sz8GEpS2ClwuGuu_-EIiy5x2miycsWIVVlXrZoI"
 
-cases_by_nhs <- cases_by_nhs %>% 
+cases_by_nhs <- read_csv(paste0(workbook_url, "&gid=1335016048"))
+
+cases_by_nhs <- cases_by_nhs %>%
   mutate(Date = dmy(Date)) %>%
   pivot_longer(-Date, names_to = "Region", values_to = "Cases")
 
-orgs <- read_csv("https://docs.google.com/spreadsheets/d/1LYQ7sz8GEpS2ClwuGuu_-EIiy5x2miycsWIVVlXrZoI/export?format=csv&id=1LYQ7sz8GEpS2ClwuGuu_-EIiy5x2miycsWIVVlXrZoI&gid=1236221803")
+orgs <- read_csv(paste0(workbook_url, "&gid=1236221803"))
 
 
-pretty_max_date = cases_by_nhs$Date %>% max %>% strftime("%d-%b-%Y")
+pretty_max_date <- cases_by_nhs$Date %>%
+  max() %>%
+  strftime("%d-%b-%Y")
 
 
-cases_by_nhs$Region = 
+cases_by_nhs$Region <-
   factor(cases_by_nhs$Region, levels = orgs$Region)
 
 
-cases_by_nhs <- cases_by_nhs %>% 
+cases_by_nhs <- cases_by_nhs %>%
   filter(!is.na(Cases)) %>% # Otherwise you have an issue with missing rows on 18-Mar
-  group_by(Region) %>% arrange(Date) %>%
-  mutate(NewCases = ifelse(is.na(lag(Cases)), Cases, Cases-lag(Cases))) %>%
+  group_by(Region) %>%
+  arrange(Date) %>%
+  mutate(NewCases = ifelse(is.na(lag(Cases)), Cases, Cases - lag(Cases))) %>%
   ungroup()
 
 #
 # Cumulative Cases
 #
 
-min_cases = 50
+min_cases <- 50
 
-for_min_cases_chart <- cases_by_nhs %>% 
+for_min_cases_chart <- cases_by_nhs %>%
   add_days_since_min(Cases, group = Region, min = min_cases)
 
 
@@ -41,10 +46,10 @@ for_min_cases_chart <- cases_by_nhs %>%
 # New Cases in last Week
 #
 
-min_new_cases_in_last_week = 100
+min_new_cases_in_last_week <- 100
 
 for_new_cases_in_last_week_chart <- cases_by_nhs %>%
-  add_rolling_seven_day_sums(NewCases, group=Region) %>%
+  add_rolling_seven_day_sums(NewCases, group = Region) %>%
   add_days_since_min(NewCasesInLastWeek, group = Region, min = min_new_cases_in_last_week)
 
 
@@ -52,22 +57,23 @@ for_new_cases_in_last_week_chart <- cases_by_nhs %>%
 # Deaths
 #
 
+deaths_by_country <- read_csv(paste0(workbook_url, "&gid=2034844950"))
 
-deaths_by_country <- read_csv("https://docs.google.com/spreadsheets/d/1LYQ7sz8GEpS2ClwuGuu_-EIiy5x2miycsWIVVlXrZoI/export?format=csv&id=1LYQ7sz8GEpS2ClwuGuu_-EIiy5x2miycsWIVVlXrZoI&gid=2034844950")
-
-deaths_by_country <- deaths_by_country %>% 
+deaths_by_country <- deaths_by_country %>%
   mutate(Date = dmy(Date)) %>%
   pivot_longer(-Date, names_to = "Country", values_to = "Deaths")
 
-deaths_by_country <- deaths_by_country %>% filter(Country != 'UK')
+deaths_by_country <- deaths_by_country %>% filter(Country != "UK")
 
-deaths_by_country$Country <- factor(deaths_by_country$Country, levels=c(
+deaths_by_country$Country <- factor(deaths_by_country$Country, levels = c(
   "Wales", "Scotland", "Northern Ireland", "England",
-  "Denmark", "Germany", "Italy", "Spain"))
+  "Denmark", "Germany", "Italy", "Spain"
+))
 
 deaths_by_country <- deaths_by_country %>%
-  group_by(Country) %>% arrange(Date) %>%
-  mutate(NewDeaths = ifelse(is.na(lag(Deaths)), Deaths, Deaths-lag(Deaths))) %>%
+  group_by(Country) %>%
+  arrange(Date) %>%
+  mutate(NewDeaths = ifelse(is.na(lag(Deaths)), Deaths, Deaths - lag(Deaths))) %>%
   ungroup()
 
 
@@ -75,7 +81,7 @@ deaths_by_country <- deaths_by_country %>%
 # Cumulative deaths
 #
 
-min_deaths = 20
+min_deaths <- 20
 
 for_deaths_chart <- deaths_by_country %>%
   add_days_since_min(Deaths, group = Country, min = min_deaths)
@@ -85,10 +91,8 @@ for_deaths_chart <- deaths_by_country %>%
 # New deaths in last week
 #
 
-min_new_deaths_in_last_week = 10
+min_new_deaths_in_last_week <- 10
 
-for_new_deaths_in_last_week_chart <- deaths_by_country %>% 
-  add_rolling_seven_day_sums(NewDeaths, group=Country) %>%
-  add_days_since_min(NewDeathsInLastWeek, group=Country, min=min_new_deaths_in_last_week)
-
-
+for_new_deaths_in_last_week_chart <- deaths_by_country %>%
+  add_rolling_seven_day_sums(NewDeaths, group = Country) %>%
+  add_days_since_min(NewDeathsInLastWeek, group = Country, min = min_new_deaths_in_last_week)
