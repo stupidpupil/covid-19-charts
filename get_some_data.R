@@ -10,6 +10,10 @@ cases_by_nhs <- cases_by_nhs %>%
 
 orgs <- read_csv("https://docs.google.com/spreadsheets/d/1LYQ7sz8GEpS2ClwuGuu_-EIiy5x2miycsWIVVlXrZoI/export?format=csv&id=1LYQ7sz8GEpS2ClwuGuu_-EIiy5x2miycsWIVVlXrZoI&gid=1236221803")
 
+
+pretty_max_date = cases_by_nhs$Date %>% max %>% strftime("%d-%b-%Y")
+
+
 cases_by_nhs$Region = 
   factor(cases_by_nhs$Region, levels = orgs$Region)
 
@@ -73,6 +77,7 @@ deaths_by_country$Country <- factor(deaths_by_country$Country, levels=c(
 deaths_by_country <- deaths_by_country %>%
   group_by(Country) %>%
   mutate(
+    NewDeaths = ifelse(is.na(lag(Deaths)), Deaths, Deaths-lag(Deaths)),
     DaysSinceMinDeaths = case_when(
         Deaths < min_deaths ~ -1,
         TRUE ~ 0
@@ -88,4 +93,20 @@ for_deaths_chart <- deaths_by_country %>%
   ungroup()
 
 
-  
+min_new_deaths_in_last_week = 10
+
+for_new_deaths_in_last_week_chart <- deaths_by_country %>% 
+  ungroup() %>% complete(nesting(Country, Date)) %>% group_by(Country) %>%
+  mutate(
+    NewDeathsInLastWeek = roll_sum(NewDeaths, 7, align="right", fill=NA),
+    DaysSinceMinNewDeathsInLastWeek = case_when(
+        is.na(NewDeathsInLastWeek) ~ -1,
+        NewDeathsInLastWeek < min_new_deaths_in_last_week ~ -1,
+        TRUE ~ 0
+      )
+  ) %>% 
+  filter(DaysSinceMinNewDeathsInLastWeek == 0 ) %>%
+  mutate(DaysSinceMinNewDeathsInLastWeek = as.numeric(Date-min(Date), unit="days") ) %>%
+  ungroup()
+
+
