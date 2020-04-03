@@ -11,7 +11,9 @@ draw_a_jburnish_chart <- function(
                                   primary_colour = "#005EB8", # NHS Blue
                                   draft = FALSE,
                                   draw_points = TRUE,
-                                  guides_doubling_every_x_days = c(2, 3, 4)) {
+                                  guides_doubling_every_x_days = c(2, 3, 4),
+                                  comments = NULL
+                                  ) {
 
   pretty_max_date <- data_for_chart$Date %>%
     max() %>%
@@ -70,8 +72,19 @@ draw_a_jburnish_chart <- function(
     my_plot <- my_plot + geom_point(colour = primary_colour, size = 0.3)
   }
 
+  # Comments
+  if(!is.null(comments)){
+
+    my_plot <- my_plot + geom_text(data = comments %>% mutate(x = 0, y = y_max),
+      aes(x=x, y=y, label=text), hjust=0, nudge_x = 0.8, vjust=0.2,
+      family = "Bahnschrift", colour=primary_colour, size=2.5
+
+      )
+
+  }
 
   my_plot <- my_plot + facet_wrap(as.formula(paste0("~", substitute(group))), ncol = 4, nrow = 4)
+
 
 
   # Watermarks, etc.

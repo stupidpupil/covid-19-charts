@@ -8,10 +8,14 @@ source("draw_a_chart_function.R")
 # that actually London excedded the threshold 5 days earlier.
 for_new_cases_in_last_week_chart <- for_new_cases_in_last_week_chart %>% mutate(
     DaysSinceMinNewCasesInLastWeek = case_when(
-      Region == 'London' ~ DaysSinceMinNewCasesInLastWeek + 5,
+      Region == 'London' ~ DaysSinceMinNewCasesInLastWeek + 6,
       TRUE ~ DaysSinceMinNewCasesInLastWeek
     )
   )
+
+comments <- tibble(Region="London", text="Offset by 6 days")
+
+
 
 my_plot <- for_new_cases_in_last_week_chart %>% draw_a_jburnish_chart(
   x = DaysSinceMinNewCasesInLastWeek, y = NewCasesInLastWeek, group = Region, y_min = min_new_cases_in_last_week, y_max = 5100,
@@ -19,7 +23,8 @@ my_plot <- for_new_cases_in_last_week_chart %>% draw_a_jburnish_chart(
   y_title = "New confirmed cases of COVID-19 in previous 7 days",
   x_title = paste0("Days since first ", min_cases, " cases confirmed in previous week"),
   primary_colour = "#330072", # Purple
-  draft = TRUE
+  draft = TRUE,
+  comments = comments
 )
 
 print(my_plot)
