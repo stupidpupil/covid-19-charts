@@ -1,5 +1,6 @@
 source("../rolling_seven_day_sums.R")
 library(testthat)
+library(tidyverse)
 
 test_that("a complete tibble produces the expected result",{
   test_tibble <- tibble(Order = 1:14, Group='A') %>%
