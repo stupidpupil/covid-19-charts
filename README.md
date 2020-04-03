@@ -1,7 +1,7 @@
 
 # COVID-19 confirmed case and death charts
 
-Run `get_some_data.R` to produce FT-style charts of:
+Run `draw_all_charts.R` to produce FT-style charts of:
 
 - Cumulative cases/deaths per day
 - New cases/deaths per day in the last week
