@@ -14,11 +14,11 @@ test_that("a complete tibble produces the expected result",{
   test_tibble <- test_tibble_a %>% rbind(test_tibble_b) %>%
     add_days_since_min(Cases, Group, min=10, date=Order)
 
-  expect_equal(test_tibble %>% filter(Group == 'B') %>% nrow(), 16)
-  expect_equal(test_tibble %>% filter(Group == 'A') %>% nrow(), 11)
+  expect_equal(test_tibble %>% filter(Group == 'A') %>% pull(DaysSinceMinCases), 0:10)
+  expect_equal(test_tibble %>% filter(Group == 'B') %>% pull(DaysSinceMinCases), 0:15)
 
-  expect_equal(test_tibble %>% filter(Group == 'B') %>% pull(DaysSinceMinCases) %>% max, 15)
   expect_equal(test_tibble %>% filter(Group == 'A') %>% pull(DaysSinceMinCases) %>% max, 10)
+  expect_equal(test_tibble %>% filter(Group == 'B') %>% pull(DaysSinceMinCases) %>% max, 15)
 
 })
 
@@ -33,7 +33,7 @@ test_that("a tibble with missing data in the middle still tracks number of days 
   test_tibble <- test_tibble_a %>% rbind(test_tibble_b) %>%
     add_days_since_min(Cases, Group, min=10, date=Order)
 
-  expect_equal(test_tibble %>% filter(Group == 'B') %>% pull(DaysSinceMinCases) %>% max, 15)
-  expect_equal(test_tibble %>% filter(Group == 'A') %>% pull(DaysSinceMinCases) %>% max, 10)
+  expect_equal(test_tibble %>% filter(Group == 'A', Order >= 15) %>% pull(DaysSinceMinCases), 5:10)
+  expect_equal(test_tibble %>% filter(Group == 'B', Order >= 15) %>% pull(DaysSinceMinCases), 10:15)
 
 })
