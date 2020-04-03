@@ -3,6 +3,16 @@ library("cowplot")
 
 source("draw_a_chart_function.R")
 
+# HACK: we don't have data before 9th Mar, so we miss when some regions actually first
+# had more than 100 cases-per-week. This is a particular problem for London, so we guess
+# that actually London excedded the threshold 5 days earlier.
+for_new_cases_in_last_week_chart <- for_new_cases_in_last_week_chart %>% mutate(
+    DaysSinceMinNewCasesInLastWeek = case_when(
+      Region == 'London' ~ DaysSinceMinNewCasesInLastWeek + 5,
+      TRUE ~ DaysSinceMinNewCasesInLastWeek
+    )
+  )
+
 my_plot <- for_new_cases_in_last_week_chart %>% draw_a_jburnish_chart(
   x = DaysSinceMinNewCasesInLastWeek, y = NewCasesInLastWeek, group = Region, y_min = min_new_cases_in_last_week, y_max = 5100,
   title = paste0("New confirmed COVID-19 cases in previous week, \nby days-since-", min_new_cases_in_last_week, "-new-cases-first-confirmed-in-a-week"),
