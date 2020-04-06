@@ -4,7 +4,7 @@ library("cowplot")
 source("draw_a_chart_function.R")
 
 my_plot <- for_deaths_chart %>% draw_a_jburnish_chart(
-  x = DaysSinceMinDeaths, y = Deaths, group = Country, y_min = min_deaths, y_max = 3000,
+  x = DaysSinceMinDeaths, y = Deaths, group = Country, y_min = min_deaths, y_max = 5000,
   title = paste0("Cumulative reported deaths with COVID-19 in countries of UK, and four other countries, \nby days-since-", min_deaths, "th-death"),
   y_title = "Reported deaths with COVID-19",
   x_title = paste0("Days since ", min_deaths, " deaths"),
