@@ -11,19 +11,15 @@ my_plot <- for_min_cases_chart %>% draw_a_jburnish_chart(
 )
 
 my_plot <- ggdraw(my_plot) + draw_label(
-  x = 0.34, y = 0.215, hjust = 0, vjust = 1, fontfamily = "Menlo", colour = "grey40", size = 7.6, lineheight = 1.1,
+  x = 0.56, y = 0.215, hjust = 0, vjust = 1, fontfamily = "Menlo", colour = "grey40", size = 7.6, lineheight = 1.1,
   paste0(
-    "X-axis shows days since 50th confirmed case in each region.",
+    "X-axis shows days since 50th confirmed case \nin each region.",
     "\n\n",
-    "Dashed lines show rates that would produce doubling of cases \nat every 2, 3 and 4 days (top, middle, bottom).",
+    "Dashed lines show rates that would produce \ndoubling of cases at every 2, 3 and 4 days \n(top, middle, bottom).",
     "\n\n",
-    "Data from Public Health Wales",
+    "Data from PHW and PHE, as published daily\n",
     # "(collated by @LloydCymru) ",
-    "\nand Public Health England, as published daily, up to ", pretty_max_date, ".",
-    "\n\n",
-    # "Chart produced by @agcwatkins, based on @jburnmurdoch's designs.",
-    "\n",
-    "Numbers of confirmed cases are affected by many factors."
+    "up to ", pretty_max_date, "."
   )
 )
 
