@@ -9,7 +9,6 @@ my_plot <- for_new_deaths_in_last_week_chart %>% draw_a_jburnish_chart(
   y_title = "New reported COVID-19 deaths in previous 7 days",
   x_title = paste0("Days since first ", min_cases, " deaths reported in previous week"),
   primary_colour = "#DA291C", # Red
-  draft = TRUE
 )
 
 print(my_plot)

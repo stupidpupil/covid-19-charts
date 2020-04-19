@@ -61,12 +61,13 @@ deaths_by_country <- deaths_by_country %>%
   mutate(Date = dmy(Date)) %>%
   pivot_longer(-Date, names_to = "Country", values_to = "Deaths")
 
-deaths_by_country <- deaths_by_country %>% filter(Country != "UK")
 
 deaths_by_country$Country <- factor(deaths_by_country$Country, levels = c(
   "Wales", "Scotland", "Northern Ireland", "England",
-  "Denmark", "Germany", "Italy", "Spain"
+  "Denmark", "Ireland", "Norway", "Austria"
 ))
+
+deaths_by_country <- deaths_by_country %>% filter(!is.na(Country))
 
 deaths_by_country <- deaths_by_country %>%
   group_by(Country) %>%
@@ -79,7 +80,7 @@ deaths_by_country <- deaths_by_country %>%
 # Cumulative deaths
 #
 
-min_deaths <- 20
+min_deaths <- 50
 
 for_deaths_chart <- deaths_by_country %>%
   add_days_since_min(Deaths, group = Country, min = min_deaths)
@@ -89,7 +90,7 @@ for_deaths_chart <- deaths_by_country %>%
 # New deaths in last week
 #
 
-min_new_deaths_in_last_week <- 10
+min_new_deaths_in_last_week <- 30
 
 for_new_deaths_in_last_week_chart <- deaths_by_country %>%
   add_rolling_seven_day_sums(NewDeaths, group = Country) %>%
